@@ -10,6 +10,8 @@ namespace BusinessLogic.DTOs
         public string? ImageUrl { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public bool Active { get; set; }
+        public bool IsDeleted { get; set; }
     }
 
 }

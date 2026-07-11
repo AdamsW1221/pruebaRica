@@ -15,12 +15,25 @@ namespace DataAccess.Repositories
 
         public async Task<IEnumerable<Products>> GetAllAsync()
         {
-            return await _context.Products.ToListAsync();
+            // Return only non-deleted and active products
+            return await _context.Products
+                .Where(p => !p.IsDeleted && p.Active)
+                .ToListAsync();
         }
 
         public async Task<Products?> GetByIdAsync(int id)
         {
-            return await _context.Products.FindAsync(id);
+            // Ensure we don't return soft-deleted products
+            return await _context.Products
+                .FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted && p.Active);
+        }
+
+        public async Task<Products?> GetByIdIncludeDeletedAsync(int id)
+        {
+            // Ignore global query filters to allow finding soft-deleted items
+            return await _context.Products
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task AddAsync(Products product)
@@ -36,7 +49,11 @@ namespace DataAccess.Repositories
 
         public void Delete(Products products)
         {
-            _context.Products.Remove(products);
+            // Soft-delete: mark as inactive and deleted
+            products.Active = false;
+            products.IsDeleted = true;
+            products.UpdatedAt = DateTime.UtcNow;
+            _context.Products.Update(products);
         }
 
         public async Task<bool> SaveChangesAsync()

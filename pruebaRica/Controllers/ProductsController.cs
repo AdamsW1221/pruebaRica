@@ -78,6 +78,23 @@ namespace pruebaRica.Controllers
 
             return Ok(new { message = "Producto eliminado exitosamente." });
         }
+
+        // PATCH api/products/{id}/active?active=true
+        [HttpPatch("{id}/active")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> SetActive(int id, [FromQuery] bool active)
+        {
+            var success = await _productService.SetProductActiveAsync(id, active);
+            if (!success)
+            {
+                return NotFound(new { message = "Producto no encontrado." });
+            }
+
+            if (!active)
+                return Ok(new { message = "Producto activado correctamente." });
+
+            return Ok(new { message = "Producto desactivado correctamente." });
+        }
     }
 
 }

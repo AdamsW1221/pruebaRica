@@ -22,5 +22,11 @@ namespace Entitys.Products
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+        // Soft-delete / active flags
+        public bool Active { get; set; } = true;
+        public bool IsDeleted { get; set; } = false;
+
+
     }
 }

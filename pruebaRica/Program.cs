@@ -101,30 +101,12 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     try
     {
-        var context = services.GetRequiredService<ApplicationDbContext>();
-
-        var adminUser = context.Users.FirstOrDefault(u => u.Username == "admin");
-        if (adminUser != null)
-        {
-            adminUser.PasswordHash = UserService.HashPassword("admin123");
-            context.Users.Update(adminUser);
-        }
-
-        var standardUser = context.Users.FirstOrDefault(u => u.Username == "user");
-        if (standardUser != null)
-        {
-            standardUser.PasswordHash = UserService.HashPassword("user123");
-            context.Users.Update(standardUser);
-        }
-
-        if (adminUser != null || standardUser != null)
-        {
-            context.SaveChanges();
-        }
+        // Use the centralized, idempotent seeder from BusinessLogic
+        BusinessLogic.Seed.DataSeeder.SeedAsync(services, builder.Configuration, app.Logger).GetAwaiter().GetResult();
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"Error seeding password hashes: {ex.Message}");
+        app.Logger.LogError(ex, "Error running data seed");
     }
 }
 

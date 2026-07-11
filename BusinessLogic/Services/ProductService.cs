@@ -73,6 +73,20 @@ namespace BusinessLogic.Services
             return await _productRepository.SaveChangesAsync();
         }
 
+        public async Task<bool> SetProductActiveAsync(int id, bool active)
+        {
+            // Need to be able to operate on soft-deleted items as well
+            var product = await _productRepository.GetByIdIncludeDeletedAsync(id);
+            if (product == null) return false;
+
+            product.Active = true;
+            product.IsDeleted = false;
+            product.UpdatedAt = DateTime.UtcNow;
+
+            _productRepository.Update(product);
+            return await _productRepository.SaveChangesAsync();
+        }
+
         private static ProductResponseDto MapToResponseDto(Products product)
         {
             return new ProductResponseDto
@@ -84,6 +98,8 @@ namespace BusinessLogic.Services
                 ImageUrl = product.ImageUrl,
                 CreatedAt = product.CreatedAt,
                 UpdatedAt = product.UpdatedAt
+                ,Active = product.Active
+                ,IsDeleted = product.IsDeleted
             };
         }
     }

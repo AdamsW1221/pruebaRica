@@ -26,6 +26,8 @@ namespace DataAccess
             modelBuilder.Entity<Products>(entity =>
             {
                 entity.ToTable("Products");
+                // Global query filter to exclude soft-deleted or inactive products by default
+                entity.HasQueryFilter(p => !p.IsDeleted && p.Active);
             });
         }
     }
