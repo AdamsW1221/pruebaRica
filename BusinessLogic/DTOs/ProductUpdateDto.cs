@@ -1,0 +1,22 @@
+using System.ComponentModel.DataAnnotations;
+
+
+namespace BusinessLogic.DTOs
+{
+    public class ProductUpdateDto
+    {
+        [Required(ErrorMessage = "El nombre del producto es obligatorio.")]
+        [StringLength(100, ErrorMessage = "El nombre del producto no puede exceder los 100 caracteres.")]
+        public string Name { get; set; } = string.Empty;
+
+        [StringLength(500, ErrorMessage = "La descripción no puede exceder los 500 caracteres.")]
+        public string Description { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "La cantidad es obligatoria.")]
+        [Range(0, int.MaxValue, ErrorMessage = "La cantidad debe ser mayor o igual a 0.")]
+        public int Quantity { get; set; }
+
+        [StringLength(1000, ErrorMessage = "La URL de la imagen no puede exceder los 1000 caracteres.")]
+        public string? ImageUrl { get; set; }
+    }
+}
