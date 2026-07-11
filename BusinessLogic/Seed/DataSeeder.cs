@@ -34,7 +34,7 @@ namespace BusinessLogic.Seed
                 {
                     if (string.IsNullOrWhiteSpace(adminPassword))
                     {
-                        logger?.LogWarning("Admin user not created: no password provided for '{Username}'. Provide it via configuration (Seed:Admin:Password) or environment variable SEED_ADMIN_PASSWORD.", adminUsername);
+                        logger?.LogWarning("Usuario administrador no creado: no se proporcionó contraseña para '{Username}'. Proporciónela mediante la configuración (Seed:Admin:Password) o la variable de entorno SEED_ADMIN_PASSWORD.", adminUsername);
                     }
                     else
                     {
@@ -48,7 +48,7 @@ namespace BusinessLogic.Seed
 
                         context.Users.Add(admin);
                         await context.SaveChangesAsync();
-                        logger?.LogInformation("Created admin user '{Username}' with role '{Role}'.", adminUsername, adminRole);
+                        logger?.LogInformation("Usuario administrador '{Username}' creado con rol '{Role}'.", adminUsername, adminRole);
                     }
                 }
                 else
@@ -64,14 +64,14 @@ namespace BusinessLogic.Seed
                     {
                         admin.PasswordHash = UserService.HashPassword(adminPassword);
                         changed = true;
-                        logger?.LogInformation("Updated admin password for '{Username}'.", adminUsername);
+                        logger?.LogInformation("Contraseña del administrador actualizada para '{Username}'.", adminUsername);
                     }
 
                     if (changed)
                     {
                         context.Users.Update(admin);
                         await context.SaveChangesAsync();
-                        logger?.LogInformation("Updated admin user '{Username}'.", adminUsername);
+                        logger?.LogInformation("Usuario administrador '{Username}' actualizado.", adminUsername);
                     }
                 }
 
@@ -80,7 +80,7 @@ namespace BusinessLogic.Seed
                 {
                     if (string.IsNullOrWhiteSpace(userPassword))
                     {
-                        logger?.LogWarning("Standard user not created: no password provided for '{Username}'. Provide it via configuration (Seed:User:Password) or environment variable SEED_USER_PASSWORD.", userUsername);
+                        logger?.LogWarning("Usuario estándar no creado: no se proporcionó contraseña para '{Username}'. Proporciónela mediante la configuración (Seed:User:Password) o la variable de entorno SEED_USER_PASSWORD.", userUsername);
                     }
                     else
                     {
@@ -94,7 +94,7 @@ namespace BusinessLogic.Seed
 
                         context.Users.Add(standard);
                         await context.SaveChangesAsync();
-                        logger?.LogInformation("Created standard user '{Username}' with role '{Role}'.", userUsername, userRole);
+                        logger?.LogInformation("Usuario estándar '{Username}' creado con rol '{Role}'.", userUsername, userRole);
                     }
                 }
                 else
@@ -110,20 +110,20 @@ namespace BusinessLogic.Seed
                     {
                         standard.PasswordHash = UserService.HashPassword(userPassword);
                         changed = true;
-                        logger?.LogInformation("Updated standard user password for '{Username}'.", userUsername);
+                        logger?.LogInformation("Contraseña del usuario estándar actualizada para '{Username}'.", userUsername);
                     }
 
                     if (changed)
                     {
                         context.Users.Update(standard);
                         await context.SaveChangesAsync();
-                        logger?.LogInformation("Updated standard user '{Username}'.", userUsername);
+                        logger?.LogInformation("Usuario estándar '{Username}' actualizado.", userUsername);
                     }
                 }
             }
             catch (Exception ex)
             {
-                logger?.LogError(ex, "Error running data seed.");
+                logger?.LogError(ex, "Error al ejecutar la inicialización de datos.");
                 
             }
         }

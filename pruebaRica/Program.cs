@@ -77,7 +77,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", policy =>
     {
-        policy.WithOrigins("http://localhost:5173") // React client Vite port
+        policy.WithOrigins("http://localhost:5173") 
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -101,12 +101,12 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     try
     {
-        // Use the centralized, idempotent seeder from BusinessLogic
+       
         BusinessLogic.Seed.DataSeeder.SeedAsync(services, builder.Configuration, app.Logger).GetAwaiter().GetResult();
     }
     catch (Exception ex)
     {
-        app.Logger.LogError(ex, "Error running data seed");
+        app.Logger.LogError(ex, "Error al ejecutar la inicialización de datos");
     }
 }
 
