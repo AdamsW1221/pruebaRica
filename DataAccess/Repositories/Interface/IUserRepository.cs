@@ -1,4 +1,4 @@
-﻿using Entitys.User;
+using Entitys.User;
 
 namespace DataAccess.Repositories.Interface
 {
@@ -6,7 +6,10 @@ namespace DataAccess.Repositories.Interface
     {
         Task<User?> GetByUsernameAsync(string username);
         Task<User?> GetByIdAsync(int id);
+        Task<IEnumerable<User>> GetAllAsync();
         Task AddAsync(User user);
+        void Update(User user);
+        void Delete(User user);
         Task<bool> SaveChangesAsync();
     }
 }

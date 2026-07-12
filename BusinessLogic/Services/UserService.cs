@@ -1,4 +1,4 @@
-﻿using BusinessLogic.DTOs;
+using BusinessLogic.DTOs;
 using BusinessLogic.Services.Interface;
 using DataAccess.Repositories.Interface;
 using System;
@@ -28,7 +28,7 @@ namespace BusinessLogic.Services
             {
                 Username = registerRequest.Username.Trim(),
                 PasswordHash = HashPassword(registerRequest.Password),
-                Role = "User",
+                Role = string.IsNullOrWhiteSpace(registerRequest.Role) ? "User" : registerRequest.Role.Trim(),
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -56,6 +56,56 @@ namespace BusinessLogic.Services
                 Username = user.Username,
                 Role = user.Role
             };
+        }
+
+        public async Task<IEnumerable<UserResponseDto>> GetAllUsersAsync()
+        {
+            var users = await _userRepository.GetAllAsync();
+            var result = new List<UserResponseDto>();
+            foreach (var user in users)
+            {
+                result.Add(new UserResponseDto
+                {
+                    Id = user.Id,
+                    Username = user.Username,
+                    Role = user.Role,
+                    CreatedAt = user.CreatedAt
+                });
+            }
+            return result;
+        }
+
+        public async Task<bool> UpdateUserRoleAsync(int id, string newRole)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null) return false;
+
+            user.Role = newRole;
+            _userRepository.Update(user);
+            return await _userRepository.SaveChangesAsync();
+        }
+
+        public async Task<UserResponseDto?> GetUserByUsernameAsync(string username)
+        {
+            var user = await _userRepository.GetByUsernameAsync(username);
+            if (user == null) return null;
+
+            return new UserResponseDto
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Role = user.Role,
+                CreatedAt = user.CreatedAt
+            };
+        }
+
+        public async Task<bool> DeleteUserAsync(int id)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null) return false;
+
+            _userRepository.Delete(user);
+            return await _userRepository.SaveChangesAsync();
         }
 
         public static string HashPassword(string password)
@@ -91,5 +141,4 @@ namespace BusinessLogic.Services
             }
         }
     }
-
 }

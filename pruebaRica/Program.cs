@@ -12,7 +12,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -35,7 +34,6 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = jwtSettings["Issuer"] ?? "RicaInventoryAPI",
         ValidAudience = jwtSettings["Audience"] ?? "RicaInventoryClient",
         IssuerSigningKey = new SymmetricSecurityKey(key),
-        // Ensure the role claim is read from the JWT using the standard role claim type
         RoleClaimType = System.Security.Claims.ClaimTypes.Role,
         NameClaimType = System.Security.Claims.ClaimTypes.Name,
         ClockSkew = TimeSpan.Zero
@@ -43,6 +41,15 @@ builder.Services.AddAuthentication(options =>
 
     options.Events = new JwtBearerEvents
     {
+        OnMessageReceived = context =>
+        {
+            var token = context.Request.Cookies["jwt"];
+            if (!string.IsNullOrEmpty(token))
+            {
+                context.Token = token;
+            }
+            return Task.CompletedTask;
+        },
         OnChallenge = context =>
         {
             context.HandleResponse();
@@ -60,7 +67,7 @@ builder.Services.AddAuthentication(options =>
             context.Response.ContentType = "application/json";
             var responseJson = System.Text.Json.JsonSerializer.Serialize(new
             {
-                message = "Acceso denegado. Se requieren permisos de Administrador."
+                message = "Acceso denegado. Se requieren permisos necesarios."
             });
             return context.Response.WriteAsync(responseJson);
         }
@@ -77,7 +84,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", policy =>
     {
-        policy.WithOrigins("http://localhost:5173") 
+        policy.WithOrigins("http://localhost:5173", "http://localhost:5174") 
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -101,7 +108,6 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     try
     {
-       
         BusinessLogic.Seed.DataSeeder.SeedAsync(services, builder.Configuration, app.Logger).GetAwaiter().GetResult();
     }
     catch (Exception ex)

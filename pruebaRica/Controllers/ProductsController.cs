@@ -1,4 +1,4 @@
-﻿using BusinessLogic.DTOs;
+using BusinessLogic.DTOs;
 using BusinessLogic.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,19 +24,26 @@ namespace pruebaRica.Controllers
             return Ok(products);
         }
 
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<ProductResponseDto>>> GetAllIncludeDeactivated()
+        {
+            var products = await _productService.GetAllProductsIncludeDeactivatedAsync();
+            return Ok(products);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductResponseDto>> GetById(int id)
         {
             var product = await _productService.GetProductByIdAsync(id);
             if (product == null)
             {
-                return NotFound(new { message = "Producto no encontrado." });
+                return NotFound(new { message = "Producto no encontrado o inactivo." });
             }
             return Ok(product);
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "SuperAdmin,superadmin,Admin,admin")]
         public async Task<ActionResult<ProductResponseDto>> Create([FromBody] ProductCreateDto createDto)
         {
             if (!ModelState.IsValid)
@@ -49,7 +56,7 @@ namespace pruebaRica.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "SuperAdmin,superadmin,Admin,admin")]
         public async Task<ActionResult<ProductResponseDto>> Update(int id, [FromBody] ProductUpdateDto updateDto)
         {
             if (!ModelState.IsValid)
@@ -66,22 +73,34 @@ namespace pruebaRica.Controllers
             return Ok(product);
         }
 
-        [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpPatch("{id}/deactivate")]
+        [Authorize(Roles = "SuperAdmin,superadmin,Admin,admin")]
+        public async Task<IActionResult> Deactivate(int id)
         {
-            var success = await _productService.DeleteProductAsync(id);
+            var success = await _productService.DeactivateProductAsync(id);
             if (!success)
             {
-                return NotFound(new { message = "Producto no encontrado o no se pudo eliminar." });
+                return NotFound(new { message = "Producto no encontrado o no se pudo desactivar." });
             }
 
-            return Ok(new { message = "Producto eliminado exitosamente." });
+            return Ok(new { message = "Producto desactivado exitosamente." });
         }
 
-        // PATCH api/products/{id}/active?active=true
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "SuperAdmin,superadmin,Admin,admin")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var success = await _productService.HardDeleteProductAsync(id);
+            if (!success)
+            {
+                return NotFound(new { message = "Producto no encontrado o no se pudo eliminar de la base de datos." });
+            }
+
+            return Ok(new { message = "Producto eliminado permanentemente de la base de datos." });
+        }
+
         [HttpPatch("{id}/active")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "SuperAdmin,superadmin,Admin,admin")]
         public async Task<IActionResult> SetActive(int id, [FromQuery] bool active)
         {
             var success = await _productService.SetProductActiveAsync(id, active);
@@ -90,11 +109,7 @@ namespace pruebaRica.Controllers
                 return NotFound(new { message = "Producto no encontrado." });
             }
 
-            if (!active)
-                return Ok(new { message = "Producto activado correctamente." });
-
-            return Ok(new { message = "Producto desactivado correctamente." });
+            return Ok(new { message = "Producto activado/restaurado correctamente." });
         }
     }
-
 }

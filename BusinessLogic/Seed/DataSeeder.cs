@@ -10,7 +10,6 @@ using BusinessLogic.Services;
 
 namespace BusinessLogic.Seed
 {
-
     public static class DataSeeder
     {
         public static async Task SeedAsync(IServiceProvider serviceProvider, IConfiguration configuration, ILogger? logger = null)
@@ -19,15 +18,13 @@ namespace BusinessLogic.Seed
             {
                 var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
 
-                
                 var adminUsername = configuration["Seed:Admin:Username"] ?? Environment.GetEnvironmentVariable("SEED_ADMIN_USERNAME") ?? "admin";
-                var adminPassword = configuration["Seed:Admin:Password"] ?? Environment.GetEnvironmentVariable("SEED_ADMIN_PASSWORD");
-                var adminRole = configuration["Seed:Admin:Role"] ?? Environment.GetEnvironmentVariable("SEED_ADMIN_ROLE") ?? "Admin";
+                var adminPassword = configuration["Seed:Admin:Password"] ?? Environment.GetEnvironmentVariable("SEED_ADMIN_PASSWORD") ?? "admin123";
+                var adminRole = configuration["Seed:Admin:Role"] ?? Environment.GetEnvironmentVariable("SEED_ADMIN_ROLE") ?? "SuperAdmin";
 
                 var userUsername = configuration["Seed:User:Username"] ?? Environment.GetEnvironmentVariable("SEED_USER_USERNAME") ?? "user";
-                var userPassword = configuration["Seed:User:Password"] ?? Environment.GetEnvironmentVariable("SEED_USER_PASSWORD");
+                var userPassword = configuration["Seed:User:Password"] ?? Environment.GetEnvironmentVariable("SEED_USER_PASSWORD") ?? "user123";
                 var userRole = configuration["Seed:User:Role"] ?? Environment.GetEnvironmentVariable("SEED_USER_ROLE") ?? "User";
-
 
                 var admin = await context.Users.FirstOrDefaultAsync(u => u.Username == adminUsername);
                 if (admin == null)
@@ -54,11 +51,7 @@ namespace BusinessLogic.Seed
                 else
                 {
                     var changed = false;
-                    if (admin.Role != adminRole)
-                    {
-                        admin.Role = adminRole;
-                        changed = true;
-                    }
+          
 
                     if (!string.IsNullOrWhiteSpace(adminPassword) && !UserService.VerifyPassword(adminPassword, admin.PasswordHash))
                     {
@@ -100,11 +93,7 @@ namespace BusinessLogic.Seed
                 else
                 {
                     var changed = false;
-                    if (standard.Role != userRole)
-                    {
-                        standard.Role = userRole;
-                        changed = true;
-                    }
+                   
 
                     if (!string.IsNullOrWhiteSpace(userPassword) && !UserService.VerifyPassword(userPassword, standard.PasswordHash))
                     {
@@ -124,7 +113,6 @@ namespace BusinessLogic.Seed
             catch (Exception ex)
             {
                 logger?.LogError(ex, "Error al ejecutar la inicialización de datos.");
-                
             }
         }
     }

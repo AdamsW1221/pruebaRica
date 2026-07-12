@@ -20,6 +20,12 @@ namespace BusinessLogic.Services
             return products.Select(p => MapToResponseDto(p));
         }
 
+        public async Task<IEnumerable<ProductResponseDto>> GetAllProductsIncludeDeactivatedAsync()
+        {
+            var products = await _productRepository.GetAllIncludeDeactivatedAsync();
+            return products.Select(p => MapToResponseDto(p));
+        }
+
         public async Task<ProductResponseDto?> GetProductByIdAsync(int id)
         {
             var product = await _productRepository.GetByIdAsync(id);
@@ -62,25 +68,31 @@ namespace BusinessLogic.Services
             return MapToResponseDto(product);
         }
 
-        public async Task<bool> DeleteProductAsync(int id)
+        public async Task<bool> DeactivateProductAsync(int id)
         {
             var product = await _productRepository.GetByIdAsync(id);
-
             if (product == null) return false;
 
-            _productRepository.Delete(product);
+            _productRepository.Deactivate(product);
+            return await _productRepository.SaveChangesAsync();
+        }
 
+        public async Task<bool> HardDeleteProductAsync(int id)
+        {
+            var product = await _productRepository.GetByIdIncludeDeactivatedAsync(id);
+            if (product == null) return false;
+
+            await _productRepository.HardDeleteAsync(product);
             return await _productRepository.SaveChangesAsync();
         }
 
         public async Task<bool> SetProductActiveAsync(int id, bool active)
         {
-            // Need to be able to operate on soft-deleted items as well
-            var product = await _productRepository.GetByIdIncludeDeletedAsync(id);
+            var product = await _productRepository.GetByIdIncludeDeactivatedAsync(id);
             if (product == null) return false;
 
             product.Active = true;
-            product.IsDeleted = false;
+            product.IsDesactivate = false;
             product.UpdatedAt = DateTime.UtcNow;
 
             _productRepository.Update(product);
@@ -97,11 +109,10 @@ namespace BusinessLogic.Services
                 Quantity = product.Quantity,
                 ImageUrl = product.ImageUrl,
                 CreatedAt = product.CreatedAt,
-                UpdatedAt = product.UpdatedAt
-                ,Active = product.Active
-                ,IsDeleted = product.IsDeleted
+                UpdatedAt = product.UpdatedAt,
+                Active = product.Active,
+                IsDesactivate = product.IsDesactivate
             };
         }
     }
-
 }

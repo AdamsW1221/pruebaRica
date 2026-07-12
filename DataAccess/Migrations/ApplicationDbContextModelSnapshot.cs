@@ -42,10 +42,9 @@ namespace DataAccess.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("ImageUrl")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool>("IsDesactivate")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")

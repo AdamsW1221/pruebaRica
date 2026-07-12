@@ -1,4 +1,4 @@
-﻿using Entitys.Products;
+using Entitys.Products;
 using Entitys.User;
 using Microsoft.EntityFrameworkCore;
     
@@ -26,8 +26,8 @@ namespace DataAccess
             modelBuilder.Entity<Products>(entity =>
             {
                 entity.ToTable("Products");
-                // Global query filter to exclude soft-deleted or inactive products by default
-                entity.HasQueryFilter(p => !p.IsDeleted && p.Active);
+                // Global query filter to exclude deactivated products by default
+                entity.HasQueryFilter(p => !p.IsDesactivate && p.Active);
             });
         }
     }

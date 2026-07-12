@@ -1,4 +1,4 @@
-﻿using DataAccess.Repositories.Interface;
+using DataAccess.Repositories.Interface;
 using Entitys.User;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,9 +23,24 @@ namespace DataAccess.Repositories
             return await _context.Users.FindAsync(id);
         }
 
+        public async Task<IEnumerable<User>> GetAllAsync()
+        {
+            return await _context.Users.ToListAsync();
+        }
+
         public async Task AddAsync(User user)
         {
             await _context.Users.AddAsync(user);
+        }
+
+        public void Update(User user)
+        {
+            _context.Users.Update(user);
+        }
+
+        public void Delete(User user)
+        {
+            _context.Users.Remove(user);
         }
 
         public async Task<bool> SaveChangesAsync()

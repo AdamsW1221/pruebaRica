@@ -1,4 +1,4 @@
-﻿using DataAccess.Repositories.Interface;
+using DataAccess.Repositories.Interface;
 using Entitys.Products;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,22 +15,26 @@ namespace DataAccess.Repositories
 
         public async Task<IEnumerable<Products>> GetAllAsync()
         {
-            // Return only non-deleted and active products
             return await _context.Products
-                .Where(p => !p.IsDeleted && p.Active)
+                .Where(p => !p.IsDesactivate && p.Active)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Products>> GetAllIncludeDeactivatedAsync()
+        {
+            return await _context.Products
+                .IgnoreQueryFilters()
                 .ToListAsync();
         }
 
         public async Task<Products?> GetByIdAsync(int id)
         {
-            // Ensure we don't return soft-deleted products
             return await _context.Products
-                .FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted && p.Active);
+                .FirstOrDefaultAsync(p => p.Id == id && !p.IsDesactivate && p.Active);
         }
 
-        public async Task<Products?> GetByIdIncludeDeletedAsync(int id)
+        public async Task<Products?> GetByIdIncludeDeactivatedAsync(int id)
         {
-            // Ignore global query filters to allow finding soft-deleted items
             return await _context.Products
                 .IgnoreQueryFilters()
                 .FirstOrDefaultAsync(p => p.Id == id);
@@ -43,17 +47,21 @@ namespace DataAccess.Repositories
 
         public void Update(Products product)
         {
-
             _context.Products.Update(product);
         }
 
-        public void Delete(Products products)
+        public void Deactivate(Products product)
         {
-            // Soft-delete: mark as inactive and deleted
-            products.Active = false;
-            products.IsDeleted = true;
-            products.UpdatedAt = DateTime.UtcNow;
-            _context.Products.Update(products);
+            product.Active = false;
+            product.IsDesactivate = true;
+            product.UpdatedAt = DateTime.UtcNow;
+            _context.Products.Update(product);
+        }
+
+        public async Task HardDeleteAsync(Products product)
+        {
+            _context.Products.Remove(product);
+            await Task.CompletedTask;
         }
 
         public async Task<bool> SaveChangesAsync()
@@ -61,5 +69,4 @@ namespace DataAccess.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
     }
-
 }

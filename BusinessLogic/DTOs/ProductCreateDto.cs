@@ -15,7 +15,6 @@ namespace BusinessLogic.DTOs
         [Range(0, int.MaxValue, ErrorMessage = "La cantidad debe ser mayor o igual a 0.")]
         public int Quantity { get; set; }
 
-        [StringLength(1000, ErrorMessage = "La URL de la imagen no puede exceder los 1000 caracteres.")]
         public string? ImageUrl { get; set; }
     }
 }

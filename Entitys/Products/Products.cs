@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 
-
 namespace Entitys.Products
 {
     public class Products
@@ -17,16 +16,12 @@ namespace Entitys.Products
         [Range(0, int.MaxValue)]
         public int Quantity { get; set; }
 
-        [StringLength(1000)]
         public string? ImageUrl { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-        // Soft-delete / active flags
         public bool Active { get; set; } = true;
-        public bool IsDeleted { get; set; } = false;
-
-
+        public bool IsDesactivate { get; set; } = false;
     }
 }

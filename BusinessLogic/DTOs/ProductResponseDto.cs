@@ -1,4 +1,3 @@
-
 namespace BusinessLogic.DTOs
 {
     public class ProductResponseDto
@@ -11,7 +10,6 @@ namespace BusinessLogic.DTOs
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public bool Active { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsDesactivate { get; set; }
     }
-
 }
