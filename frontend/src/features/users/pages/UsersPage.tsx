@@ -8,7 +8,7 @@ import { Badge } from '../../../components/ui/Badge'
 export default function UsersPage() {
   const { user: currentUser } = useAuthStore()
   const currentRole = currentUser?.role?.toLowerCase()
-  
+
   if (currentRole !== 'superadmin') {
     return <Navigate to="/products" replace />
   }

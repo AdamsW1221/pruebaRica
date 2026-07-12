@@ -29,11 +29,10 @@ export default function ProductsPage() {
     fetchProducts()
   }, [fetchProducts])
 
-  // Normal users only see active/non-deactivated products. Staff/Admins respect the tab filter.
   const filtered = useMemo(() => {
     let list = [...products]
     if (!isAdmin) {
-      // Normal users only see active, non-deactivated products
+
       list = list.filter((p) => p.active && !p.isDesactivate)
     } else {
       if (filter === 'inactivos') list = list.filter((p) => p.isDesactivate)
@@ -83,7 +82,7 @@ export default function ProductsPage() {
 
   const handleDelete = async () => {
     if (!deleteTarget) return
-    setDeleteTarget(null) // Reset target early to close modal
+    setDeleteTarget(null)
     setDeleteLoading(true)
     try {
       await removeProduct(deleteTarget.id)
@@ -115,7 +114,7 @@ export default function ProductsPage() {
         <div>
           <h1 style={{ fontSize: 26, fontWeight: 800, color: '#0033A0', marginBottom: 4 }}>Productos</h1>
           <p style={{ color: '#515D73', fontSize: 14 }}>
-            {isAdmin 
+            {isAdmin
               ? 'Administra el inventario de Grupo Rica — agrega, edita, desactiva o elimina productos'
               : 'Catálogo de productos disponibles en el inventario'}
           </p>

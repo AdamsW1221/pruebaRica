@@ -1,7 +1,6 @@
 using Entitys.Products;
 using Entitys.User;
 using Microsoft.EntityFrameworkCore;
-    
 
 namespace DataAccess
 {
@@ -26,7 +25,7 @@ namespace DataAccess
             modelBuilder.Entity<Products>(entity =>
             {
                 entity.ToTable("Products");
-                // Global query filter to exclude deactivated products by default
+
                 entity.HasQueryFilter(p => !p.IsDesactivate && p.Active);
             });
         }

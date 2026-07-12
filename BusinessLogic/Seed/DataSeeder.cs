@@ -51,7 +51,6 @@ namespace BusinessLogic.Seed
                 else
                 {
                     var changed = false;
-          
 
                     if (!string.IsNullOrWhiteSpace(adminPassword) && !UserService.VerifyPassword(adminPassword, admin.PasswordHash))
                     {
@@ -93,7 +92,6 @@ namespace BusinessLogic.Seed
                 else
                 {
                     var changed = false;
-                   
 
                     if (!string.IsNullOrWhiteSpace(userPassword) && !UserService.VerifyPassword(userPassword, standard.PasswordHash))
                     {

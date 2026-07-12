@@ -22,7 +22,7 @@ namespace BusinessLogic.Services
         public async Task<Entitys.User.User?> RegisterAsync(RegisterRequest registerRequest)
         {
             var existing = await _userRepository.GetByUsernameAsync(registerRequest.Username);
-            if (existing != null) return null; 
+            if (existing != null) return null;
 
             var user = new Entitys.User.User
             {

@@ -65,7 +65,7 @@ namespace pruebaRica.Controllers
 
             return Ok(new LoginResponse
             {
-                Token = response.Token, // Token is in HttpOnly cookie AND response body
+                Token = response.Token,
                 Username = response.Username,
                 Role = response.Role
             });

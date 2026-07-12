@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 
-
 namespace BusinessLogic.DTOs
 {
     public class ProductUpdateDto

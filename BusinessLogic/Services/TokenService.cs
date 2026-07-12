@@ -33,7 +33,7 @@ namespace BusinessLogic.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddHours(4), // Valid for 4 hours
+                Expires = DateTime.UtcNow.AddHours(4),
                 SigningCredentials = creds,
                 Issuer = _config["JwtSettings:Issuer"] ?? "RicaInventoryAPI",
                 Audience = _config["JwtSettings:Audience"] ?? "RicaInventoryClient"

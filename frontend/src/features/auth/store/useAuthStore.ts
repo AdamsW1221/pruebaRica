@@ -29,7 +29,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       await logoutUser()
     } catch {
-      // Clean up locally even if API call fails
+
     }
     localStorage.removeItem('rica_user_profile')
     set({ user: null, isAuthenticated: false })

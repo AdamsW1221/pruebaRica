@@ -4,10 +4,10 @@
 
 namespace DataAccess.Migrations
 {
-    /// <inheritdoc />
+
     public partial class ExpandImageUrlToMax : Migration
     {
-        /// <inheritdoc />
+
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(
@@ -21,7 +21,6 @@ namespace DataAccess.Migrations
                 oldNullable: true);
         }
 
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(

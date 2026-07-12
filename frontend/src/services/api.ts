@@ -12,7 +12,7 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Force reload or redirect to login when session expires
+
       localStorage.removeItem('rica_user_profile')
       if (window.location.pathname !== '/login') {
         window.location.href = '/login'

@@ -12,7 +12,7 @@ function App() {
       try {
         await checkAuth()
       } catch {
-        // Handled silently, ProtectedRoute redirects to login if unauthenticated
+
       } finally {
         setChecking(false)
       }

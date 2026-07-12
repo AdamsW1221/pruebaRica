@@ -4,10 +4,10 @@
 
 namespace DataAccess.Migrations
 {
-    /// <inheritdoc />
+
     public partial class RenameIsDeletedToIsDesactivate : Migration
     {
-        /// <inheritdoc />
+
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.RenameColumn(
@@ -16,7 +16,6 @@ namespace DataAccess.Migrations
                 newName: "IsDesactivate");
         }
 
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.RenameColumn(
