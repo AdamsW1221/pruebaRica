@@ -4,17 +4,20 @@ import { getAllUsers, updateUserRole, deleteUser, type UserItem } from '../servi
 import { useAuthStore } from '../../auth/store/useAuthStore'
 import { useToast } from '../../../components/ui/useToast'
 import { Badge } from '../../../components/ui/Badge'
+import { UserDeleteConfirmModal } from '../components/UserDeleteConfirmModal'
 
 export default function UsersPage() {
   const { user: currentUser } = useAuthStore()
   const currentRole = currentUser?.role?.toLowerCase()
-
+  
   if (currentRole !== 'superadmin') {
     return <Navigate to="/products" replace />
   }
 
   const [users, setUsers] = useState<UserItem[]>([])
   const [loading, setLoading] = useState(false)
+  const [deleteTarget, setDeleteTarget] = useState<UserItem | null>(null)
+  const [deleteLoading, setDeleteLoading] = useState(false)
   const toast = useToast()
 
   const fetchUsers = async () => {
@@ -45,16 +48,18 @@ export default function UsersPage() {
     }
   }
 
-  const handleDeleteUser = async (userId: number, username: string) => {
-    const confirm = window.confirm(`¿Estás seguro de que deseas eliminar permanentemente al usuario "${username}"?`)
-    if (!confirm) return
-
+  const handleDeleteUser = async () => {
+    if (!deleteTarget) return
+    setDeleteLoading(true)
     try {
-      await deleteUser(userId)
-      toast.success(`Usuario "${username}" eliminado correctamente.`)
-      setUsers((prev) => prev.filter((u) => u.id !== userId))
+      await deleteUser(deleteTarget.id)
+      toast.success(`Usuario "${deleteTarget.username}" eliminado correctamente.`)
+      setUsers((prev) => prev.filter((u) => u.id !== deleteTarget.id))
+      setDeleteTarget(null)
     } catch {
       toast.error('No se pudo eliminar al usuario.')
+    } finally {
+      setDeleteLoading(false)
     }
   }
 
@@ -179,7 +184,7 @@ export default function UsersPage() {
                         <button
                           id={`delete-user-${item.id}`}
                           disabled={isSelf}
-                          onClick={() => handleDeleteUser(item.id, item.username)}
+                          onClick={() => setDeleteTarget(item)}
                           style={{
                             background: 'transparent',
                             border: 'none',
@@ -220,6 +225,14 @@ export default function UsersPage() {
           </div>
         )}
       </div>
+
+      <UserDeleteConfirmModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleDeleteUser}
+        username={deleteTarget?.username ?? ''}
+        loading={deleteLoading}
+      />
     </div>
   )
 }

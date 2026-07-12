@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Modal } from '../../../components/ui/Modal'
 import { Button } from '../../../components/ui/Button'
 import { Input } from '../../../components/ui/Input'
+import { useToast } from '../../../components/ui/useToast'
 import type { Product, ProductCreateData, ProductUpdateData } from '../services/productService'
 
 interface ProductModalProps {
@@ -27,6 +28,7 @@ export function ProductModal({ isOpen, onClose, onSave, editingProduct }: Produc
   const [form, setForm] = useState<FormState>({ name: '', description: '', quantity: '0', imageUrl: '' })
   const [errors, setErrors] = useState<FormErrors>({ name: '', quantity: '' })
   const [loading, setLoading] = useState(false)
+  const toast = useToast()
 
   useEffect(() => {
     if (editingProduct) {
@@ -74,7 +76,7 @@ export function ProductModal({ isOpen, onClose, onSave, editingProduct }: Produc
     if (!file) return
 
     if (file.size > 2 * 1024 * 1024) {
-      alert('La imagen seleccionada excede el límite de 2MB.')
+      toast.error('La imagen seleccionada excede el límite de 2MB.')
       return
     }
 
