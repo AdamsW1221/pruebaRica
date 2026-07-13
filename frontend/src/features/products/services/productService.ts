@@ -26,6 +26,14 @@ export interface ProductUpdateData {
   imageUrl?: string | null
 }
 
+export interface PagedResult<T> {
+  items: T[]
+  totalCount: number
+  page: number
+  pageSize: number
+  totalPages: number
+}
+
 export const getAllProducts = async (): Promise<Product[]> => {
   const res = await api.get<Product[]>('/api/products')
   return res.data
@@ -33,6 +41,11 @@ export const getAllProducts = async (): Promise<Product[]> => {
 
 export const getAllProductsIncludeDeactivated = async (): Promise<Product[]> => {
   const res = await api.get<Product[]>('/api/products/all')
+  return res.data
+}
+
+export const getPagedProducts = async (page: number, pageSize: number = 8, search: string = '', filter: string = 'active'): Promise<PagedResult<Product>> => {
+  const res = await api.get<PagedResult<Product>>(`/api/products/paged?page=${page}&pageSize=${pageSize}&search=${encodeURIComponent(search)}&filter=${filter}`)
   return res.data
 }
 

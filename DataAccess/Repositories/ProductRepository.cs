@@ -27,6 +27,35 @@ namespace DataAccess.Repositories
                 .ToListAsync();
         }
 
+        public async Task<(IEnumerable<Products> Items, int TotalCount)> GetPagedAsync(int page, int pageSize, string? search = null, string? filter = "active")
+        {
+            IQueryable<Products> query = _context.Products;
+
+            if (filter == "inactive")
+            {
+                query = query.IgnoreQueryFilters().Where(p => p.IsDesactivate || !p.Active);
+            }
+            else
+            {
+                query = query.Where(p => !p.IsDesactivate && p.Active);
+            }
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var searchLower = search.Trim().ToLower();
+                query = query.Where(p => p.Name.ToLower().Contains(searchLower) || p.Description.ToLower().Contains(searchLower));
+            }
+
+            var totalCount = await query.CountAsync();
+            var items = await query
+                .OrderBy(p => p.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalCount);
+        }
+
         public async Task<Products?> GetByIdAsync(int id)
         {
             return await _context.Products

@@ -7,6 +7,7 @@ namespace BusinessLogic.Services.Interface
         Task<IEnumerable<ProductResponseDto>> GetAllProductsAsync();
         Task<IEnumerable<ProductResponseDto>> GetAllProductsIncludeDeactivatedAsync();
         Task<ProductResponseDto?> GetProductByIdAsync(int id);
+        Task<PagedResult<ProductResponseDto>> GetPagedProductsAsync(int page, int pageSize, string? search = null, string? filter = "active");
         Task<ProductResponseDto> CreateProductAsync(ProductCreateDto createDto);
         Task<ProductResponseDto?> UpdateProductAsync(int id, ProductUpdateDto updateDto);
         Task<bool> DeactivateProductAsync(int id);
@@ -14,3 +15,4 @@ namespace BusinessLogic.Services.Interface
         Task<bool> SetProductActiveAsync(int id, bool active);
     }
 }
+
