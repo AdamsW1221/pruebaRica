@@ -56,12 +56,15 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
     <aside
       style={{
         width: 240,
-        minHeight: '100vh',
+        height: '100vh',
         background: 'linear-gradient(180deg, #0033A0 0%, #002080 100%)',
         display: 'flex',
         flexDirection: 'column',
         flexShrink: 0,
         boxShadow: '4px 0 24px rgba(0,33,160,0.18)',
+        overflow: 'hidden',
+        position: 'sticky',
+        top: 0,
       }}
     >
       <div
@@ -108,7 +111,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
         )}
       </div>
 
-      <nav style={{ padding: '20px 12px', flex: 1 }}>
+      <nav style={{ padding: '20px 12px', flex: 1, overflowY: 'auto' }}>
         <div style={{ marginBottom: 6, paddingLeft: 8 }}>
           <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase', letterSpacing: 1 }}>
             Menú

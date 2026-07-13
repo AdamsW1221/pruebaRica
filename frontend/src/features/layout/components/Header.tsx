@@ -1,6 +1,4 @@
 import { useLocation } from 'react-router-dom'
-import { useAuthStore } from '../../auth/store/useAuthStore'
-import { Badge } from '../../../components/ui/Badge'
 
 const pageTitles: Record<string, { title: string; subtitle: string }> = {
   '/products': { title: 'Productos', subtitle: 'Gestión de inventario de productos' },
@@ -12,23 +10,8 @@ interface HeaderProps {
 }
 
 export function Header({ onMenuClick }: HeaderProps) {
-  const { user } = useAuthStore()
   const location = useLocation()
   const page = pageTitles[location.pathname] ?? { title: 'Panel', subtitle: 'Bienvenido al sistema' }
-
-  const getBadgeVariant = () => {
-    const role = user?.role?.toLowerCase()
-    if (role === 'superadmin') return 'superadmin'
-    if (role === 'admin') return 'admin'
-    return 'user'
-  }
-
-  const getRoleLabel = () => {
-    const role = user?.role?.toLowerCase()
-    if (role === 'superadmin') return 'Super Admin'
-    if (role === 'admin') return 'Administrador'
-    return 'Usuario'
-  }
 
   return (
     <header
@@ -78,46 +61,7 @@ export function Header({ onMenuClick }: HeaderProps) {
         <p style={{ fontSize: 12, color: '#515D73', margin: 0 }}>{page.subtitle}</p>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-        <Badge variant={getBadgeVariant()} />
 
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
-            padding: '6px 12px',
-            borderRadius: 12,
-            background: '#f4f6fb',
-            border: '1px solid #DCEAF7',
-          }}
-        >
-          <div
-            style={{
-              width: 32,
-              height: 32,
-              borderRadius: '50%',
-              background: 'linear-gradient(135deg, #0033A0, #4066B8)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#fff',
-              fontWeight: 700,
-              fontSize: 13,
-            }}
-          >
-            {user?.username?.[0]?.toUpperCase() ?? 'U'}
-          </div>
-          <div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: '#1a1a2e', lineHeight: 1.2 }}>
-              {user?.username}
-            </div>
-            <div style={{ fontSize: 11, color: '#515D73' }}>
-              {getRoleLabel()}
-            </div>
-          </div>
-        </div>
-      </div>
     </header>
   )
 }

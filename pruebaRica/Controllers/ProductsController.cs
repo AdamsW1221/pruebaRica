@@ -24,6 +24,17 @@ namespace pruebaRica.Controllers
             return Ok(products);
         }
 
+        [HttpGet("paged")]
+        public async Task<ActionResult<PagedResult<ProductResponseDto>>> GetPaged(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 8,
+            [FromQuery] string? search = null,
+            [FromQuery] string? filter = "active")
+        {
+            var result = await _productService.GetPagedProductsAsync(page, pageSize, search, filter);
+            return Ok(result);
+        }
+
         [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<ProductResponseDto>>> GetAllIncludeDeactivated()
         {

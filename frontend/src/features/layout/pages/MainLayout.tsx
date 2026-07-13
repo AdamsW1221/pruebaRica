@@ -7,8 +7,8 @@ export default function MainLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
-      <div className="sidebar-desktop" style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', height: '100%', minHeight: '100vh' }}>
+      <div className="sidebar-desktop" style={{ display: 'flex', alignSelf: 'flex-start', position: 'sticky', top: 0 }}>
         <Sidebar onClose={() => setSidebarOpen(false)} />
       </div>
 

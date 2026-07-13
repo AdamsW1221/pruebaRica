@@ -26,6 +26,24 @@ namespace BusinessLogic.Services
             return products.Select(p => MapToResponseDto(p));
         }
 
+        public async Task<PagedResult<ProductResponseDto>> GetPagedProductsAsync(int page, int pageSize, string? search = null, string? filter = "active")
+        {
+            if (page < 1) page = 1;
+            if (pageSize < 1) pageSize = 6;
+
+            var (items, totalCount) = await _productRepository.GetPagedAsync(page, pageSize, search, filter);
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            return new PagedResult<ProductResponseDto>
+            {
+                Items = items.Select(p => MapToResponseDto(p)),
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize,
+                TotalPages = totalPages
+            };
+        }
+
         public async Task<ProductResponseDto?> GetProductByIdAsync(int id)
         {
             var product = await _productRepository.GetByIdAsync(id);
