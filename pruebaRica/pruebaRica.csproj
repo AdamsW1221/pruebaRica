@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+    <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -12,8 +12,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.9">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Scalar.AspNetCore" Version="2.5.13" />
-  </ItemGroup>
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
 
   <ItemGroup>
     <ProjectReference Include="..\DataAccess\DataAccess.csproj" />

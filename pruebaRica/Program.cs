@@ -6,7 +6,6 @@ using DataAccess.Repositories.Interface;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Scalar.AspNetCore;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -98,7 +97,10 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 app.MapOpenApi();
-app.MapScalarApiReference();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/openapi/v1.json", "v1");
+});
 
 using (var scope = app.Services.CreateScope())
 {
